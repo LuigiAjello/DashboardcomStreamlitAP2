@@ -1,4 +1,6 @@
 import streamlit as st
+from datetime import date
+from backend.views import carteira  # Importando a função carteira de views.py
 
 def selecionar_periodo():
     # Input de data sem valor padrão, permitindo seleção de intervalo
@@ -6,12 +8,9 @@ def selecionar_periodo():
         "Selecione o período:",
         value=(),
     )
-
     # Verificar se o usuário selecionou um intervalo válido
     if len(data_selecionada) == 2:
         data_inicio_selecionada, data_fim_selecionada = data_selecionada
-        st.write("Data de início:", data_inicio_selecionada)
-        st.write("Data de fim:", data_fim_selecionada)
         return data_inicio_selecionada, data_fim_selecionada
     elif len(data_selecionada) == 1:
         st.write("Selecione uma data final para completar o intervalo.")
@@ -34,8 +33,8 @@ def selecionar_numero_acoes():
 st.title("Estratégia")
 
 # Inputs de seleção
-ind_Rentabilidade = st.selectbox("Selecione Indicador de Rentabilidade:", ["ROE", "ROC", "ROIC"])
-ind_Desconto = st.selectbox("Selecione Indicador de Desconto:", ["Earning Yield", "Dividend Yield", "P-B"])
+ind_Rentabilidade = st.selectbox("Selecione Indicador de Rentabilidade:", ["roc", "roe", "roic"])
+ind_Desconto = st.selectbox("Selecione Indicador de Desconto:", ["earning_yield", "dividend_yield", "p_vp"])
 
 # Inputs de data e número de ações
 data_inicio, data_fim = selecionar_periodo()
@@ -45,16 +44,14 @@ numero_acoes = selecionar_numero_acoes()
 if st.button("Run"):
     # Executar ação com base nos inputs selecionados
     if data_inicio and data_fim:
-        st.write("Executando com os seguintes parâmetros:")
-        st.write("Indicador de Rentabilidade:", ind_Rentabilidade)
-        st.write("Indicador de Desconto:", ind_Desconto)
-        st.write("Período de:", data_inicio, "a", data_fim)
-        st.write("Número de ações na carteira:", numero_acoes)
-        
-        # Aqui você pode adicionar o código para executar o processamento adicional
-        st.write("Processamento adicional em execução...")
+        # Executa a função `carteira` com os parâmetros selecionados
+        data_base = data_inicio  # Usamos data_inicio como data_base
+        tickers_selecionados = carteira(data_base, ind_Rentabilidade, ind_Desconto, numero_acoes)
+        st.write("Tickers Selecionados:", tickers_selecionados)
     else:
-        st.write("Por favor, selecione um intervalo de datas válido. ")
+        st.write("Por favor, selecione um intervalo de datas válido.")
+
+
 
 
 
