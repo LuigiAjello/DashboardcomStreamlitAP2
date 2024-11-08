@@ -60,8 +60,11 @@ def carteira(data, crit_rentabilidade, crit_desconto, num_acoes):
     df_rentabilidade = df.nlargest(len(df), crit_rentabilidade).reset_index(drop=True)
     df_rentabilidade['rank_rentabilidade'] = df_rentabilidade.index  # Ranking baseado na rentabilidade
     
-    # Seleção com base no desconto (usando todas as ações disponíveis)
-    df_desconto = df.nlargest(len(df), crit_desconto).reset_index(drop=True)
+    # Seleção com base no desconto (ajustando a seleção para o critério 'p_vp')
+    if crit_desconto == "p_vp":
+        df_desconto = df.nsmallest(len(df), crit_desconto).reset_index(drop=True)
+    else:
+        df_desconto = df.nlargest(len(df), crit_desconto).reset_index(drop=True)
     df_desconto['rank_desconto'] = df_desconto.index  # Ranking baseado no desconto
     
     # Combinação dos DataFrames e cálculo da média dos rankings
@@ -69,17 +72,18 @@ def carteira(data, crit_rentabilidade, crit_desconto, num_acoes):
                             df_rentabilidade[["ticker", "rank_rentabilidade"]], 
                             on="ticker", 
                             how="inner")
-    df_combinado["pontuacao_media"] = df_combinado["rank_desconto"] + df_combinado["rank_rentabilidade"]
+    df_combinado["pontuacao_media"] = (df_combinado["rank_desconto"] + df_combinado["rank_rentabilidade"]) / 2
     
     # Ordenação e seleção das melhores ações com ranking iniciado em 1
     df_ordenado = df_combinado.sort_values(by=['pontuacao_media'], ascending=True).reset_index(drop=True)
     df_ordenado['ranking'] = df_ordenado.index + 1  # Adiciona ranking começando em 1
     
     # Seleção dos tickers com base no número desejado de ações
-    df_final = df_ordenado.nlargest(num_acoes, 'pontuacao_media').reset_index(drop=True)
+    df_final = df_ordenado.nsmallest(num_acoes, 'pontuacao_media').reset_index(drop=True)
     
     # Retorna apenas os tickers selecionados
     return df_final['ticker']
+
 
 
 def pegar_df_preco_corrigido(data_ini:date, data_fim:date, carteira:list) -> pd.DataFrame:
