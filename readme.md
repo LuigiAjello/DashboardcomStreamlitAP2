@@ -1,7 +1,7 @@
 # Minha Carteira Minha Vida 📈
 
 <video controls width="600">
-  <source src="gravacaotela.mov" type="video/mp5">
+  <source src="Design sem nome.mp4" type="video/mp4">
   Seu navegador não suporta a reprodução de vídeos.
 </video>
 
