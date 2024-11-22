@@ -1,9 +1,6 @@
 # Minha Carteira Minha Vida 📈
 
-<video controls width="600">
-  <source src="gravacaotela.mov" type="video/mp5">
-  Seu navegador não suporta a reprodução de vídeos.
-</video>
+
 
 ## 📈  Análise Financeira 
 Este é um sistema de análise financeira avançada que visa fornecer ferramentas para investidores e analistas tomarem decisões fundamentadas com base em dados reais e estratégias comprovadas. O sistema foi desenvolvido utilizando as tecnologias:
