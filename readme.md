@@ -1,9 +1,8 @@
 # Minha Carteira Minha Vida 📈
 
-<video controls width="600">
-  <source src="Design sem nome.mp4" type="video/mp4">
-  Seu navegador não suporta a reprodução de vídeos.
-</video>
+- **🤓 LINK PARA O SITE:**
+https://minhacarteiraminhavida.streamlit.app/
+
 
 ## 📈  Análise Financeira 
 Este é um sistema de análise financeira avançada que visa fornecer ferramentas para investidores e analistas tomarem decisões fundamentadas com base em dados reais e estratégias comprovadas. O sistema foi desenvolvido utilizando as tecnologias:
