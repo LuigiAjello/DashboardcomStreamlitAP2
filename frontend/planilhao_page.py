@@ -41,7 +41,7 @@ def Pagina_planilhao():
         validar_data(data_base)
 
         # Ação ao clicar no botão "Buscar"
-        if st.button("Buscar Dados"):
+        if st.button("Buscar"):
             logger.info(f"Usuário clicou em 'Buscar' para a data: {data_base}")
             try:
                 # Consulta os dados
