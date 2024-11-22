@@ -1,50 +1,86 @@
 import streamlit as st
+import pandas as pd
 from datetime import date
-from backend.views import carteira  # Importando a função carteira de views.py
+from backend.views import carteira, validar_data
+from backend.routers import menu_estrategia
+from log_config.logging_config import logger  # Importa o logger centralizado
 
-def selecionar_data():
-    # Input de data única
-    data_selecionada = st.date_input(
-        "Selecione a data:",
-        value=date.today(),  # Valor padrão para hoje
-    )
+def Pagina_estrategia():
+    try:
+        logger.info("Página Estratégia carregada.")
+        
+        # Título e descrição
+        st.title("🔍 Estratégia de Seleção de Ações")
+        st.caption("""
+        Utilize indicadores financeiros de rentabilidade e desconto para identificar oportunidades de mercado.
+        ---
+        """)
 
-    # Retorna a data selecionada
-    if data_selecionada:
-        return data_selecionada
-    else:
-        st.write("Por favor, selecione uma data.")
-        return None
+        # Dicionários para mapeamento dos rótulos amigáveis para valores técnicos
+        indicadores_rentabilidade = {
+            "ROE (Return on Equity)": "roe",
+            "ROIC (Return on Invested Capital)": "roic",
+            "ROC (Return on Capital)": "roc",
+        }
 
-def selecionar_numero_acoes():
-    # Input numérico para selecionar o número de ações na carteira
-    numero_acoes = st.number_input(
-        "Selecione o número de ações na carteira:",
-        min_value=1,
-        step=1,
-        format="%d"
-    )
-    return numero_acoes
+        indicadores_desconto = {
+            "Earning Yield (Lucro sobre Valor)": "earning_yield",
+            "Dividend Yield (Rendimento de Dividendos)": "dividend_yield",
+            "P/VP (Preço sobre Valor Patrimonial)": "p_vp",
+        }
 
+        # Inputs para seleção dos indicadores
+        st.markdown("### 📈 Escolha os Indicadores")
+        indicador_rent = st.selectbox(
+            "Selecione o indicador de **rentabilidade**:",
+            options=list(indicadores_rentabilidade.keys())
+        )
+        indicador_rent_valor = indicadores_rentabilidade[indicador_rent]
+        logger.info(f"Indicador de rentabilidade selecionado: {indicador_rent} ({indicador_rent_valor})")
 
+        indicador_desc = st.selectbox(
+            "Selecione o indicador de **desconto**:",
+            options=list(indicadores_desconto.keys())
+        )
+        indicador_desc_valor = indicadores_desconto[indicador_desc]
+        logger.info(f"Indicador de desconto selecionado: {indicador_desc} ({indicador_desc_valor})")
 
-# Título da aplicação
-st.title("Estratégia")
+        # Input de data e quantidade de ações
+        st.markdown("### 🗓️ Selecione o Período e Quantidade de Ações")
+        data = st.date_input("Escolha uma data base:", value=pd.to_datetime('today'))
+        num = st.number_input(
+            "Quantas ações você deseja analisar?",
+            min_value=1, max_value=3000, value=10
+        )
+        logger.info(f"Data selecionada: {data}. Quantidade de ações: {num}")
 
-# Inputs de seleção
-ind_Rentabilidade = st.selectbox("Selecione Indicador de Rentabilidade:", ["roc", "roe", "roic"])
-ind_Desconto = st.selectbox("Selecione Indicador de Desconto:", ["earning_yield", "dividend_yield", "p_vp"])
+        # Validação da data
+        validar_data(data)
 
-# Input de data e número de ações
-data_base = selecionar_data()
-numero_acoes = selecionar_numero_acoes()
+        # Buscar os dados ao clicar no botão
+        if st.button("⚙️ Gerar Estratégia"):
+            logger.info("Usuário clicou em 'Gerar Estratégia'.")
+            try:
+                # Geração da carteira de ações
+                df_sorted, acoes_carteira = carteira(data, indicador_rent_valor, indicador_desc_valor, num)
 
-# Botão para pegar informações e executar uma ação
-if st.button("Run"):
-    # Executar ação com base nos inputs selecionados
-    if data_base and numero_acoes > 0:
-        # Executa a função `carteira` com os parâmetros selecionados
-        tickers_selecionados = carteira(data_base, ind_Rentabilidade, ind_Desconto, numero_acoes)
-        st.write("Tickers Selecionados:", tickers_selecionados)
-    else:
-        st.write("Por favor, verifique se todos os campos estão preenchidos corretamente.")
+                # Armazenar no session_state
+                st.session_state.acoes_carteira = acoes_carteira
+                st.session_state.df_sorted = df_sorted
+                st.session_state.estrategia_preenchida = True
+                logger.info(f"Carteira gerada com sucesso. Ações selecionadas: {acoes_carteira}")
+
+                # Exibição dos resultados
+                st.markdown("### 📊 Resultados da Análise")
+                st.write(
+                    f"Top {num} ações pelo indicador de rentabilidade: **{indicador_rent}** e "
+                    f"pelo indicador de desconto **{indicador_desc}** com base na data **{data.strftime('%Y-%m-%d')}**."
+                )
+                st.dataframe(df_sorted)
+                st.success("✅ Estratégia gerada com sucesso!")
+            except Exception as e:
+                logger.error(f"Erro ao gerar estratégia: {e}")
+                st.error("❌ Ocorreu um erro ao gerar a estratégia. Por favor, tente novamente.")
+    except Exception as e:
+        logger.error(f"Erro na página Estratégia: {e}")
+        st.error("❌ Ocorreu um erro inesperado. Verifique os logs ou entre em contato com o suporte.")
