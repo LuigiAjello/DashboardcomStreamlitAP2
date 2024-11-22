@@ -4,6 +4,23 @@ from backend.views import validar_data
 from log_config.logging_config import logger  # Importa o logger centralizado
 
 def Pagina_planilhao():
+    """
+    Exibe a página do Planilhão na aplicação Streamlit, permitindo ao usuário explorar dados de mercado
+    com base em uma data específica.
+
+    Funcionalidades:
+        - Entrada de data base para análise.
+        - Validação da data selecionada pelo usuário.
+        - Busca de dados de mercado com base na data fornecida.
+        - Exibição dos resultados em formato de tabela, caso existam dados.
+        - Tratamento de erros e mensagens para guiar o usuário.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
     try:
         logger.info("Página Planilhão carregada.")
         
@@ -24,7 +41,7 @@ def Pagina_planilhao():
         validar_data(data_base)
 
         # Ação ao clicar no botão "Buscar"
-        if st.button("🔍 Buscar Dados"):
+        if st.button("Buscar Dados"):
             logger.info(f"Usuário clicou em 'Buscar' para a data: {data_base}")
             try:
                 # Consulta os dados

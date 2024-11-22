@@ -6,6 +6,22 @@ from backend.routers import menu_estrategia
 from log_config.logging_config import logger  # Importa o logger centralizado
 
 def Pagina_estrategia():
+    """
+    Exibe a página de estratégia na aplicação Streamlit, permitindo ao usuário selecionar indicadores financeiros
+    e parâmetros para gerar uma carteira de ações.
+
+    Funcionalidades:
+        - Permite a escolha de indicadores de rentabilidade e desconto.
+        - Permite a seleção de uma data base para análise e o número de ações desejadas.
+        - Gera uma carteira de ações com base nos critérios selecionados.
+        - Exibe os resultados da análise em formato tabular.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
     try:
         logger.info("Página Estratégia carregada.")
         
@@ -58,7 +74,7 @@ def Pagina_estrategia():
         validar_data(data)
 
         # Buscar os dados ao clicar no botão
-        if st.button("⚙️ Gerar Estratégia"):
+        if st.button("Gerar Estratégia"):
             logger.info("Usuário clicou em 'Gerar Estratégia'.")
             try:
                 # Geração da carteira de ações

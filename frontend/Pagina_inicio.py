@@ -1,8 +1,25 @@
 import streamlit as st
 
 def Pagina_inicio():
+    """
+    Exibe a página inicial da aplicação Streamlit, fornecendo uma introdução à plataforma
+    e orientações sobre como utilizá-la.
+
+    Funcionalidades:
+        - Apresentação do título e introdução da plataforma.
+        - Orientações de como começar a usar as funcionalidades disponíveis.
+        - Agradecimentos à equipe de desenvolvimento.
+        - Informações de contato do responsável.
+        - Configuração inicial do estado da sessão.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
     # Título com emoji
-    st.title("🌟 Bem-vindo ao Minha Carteira Minha Vida 📈")
+    st.title("Bem-vindo ao Minha Carteira Minha Vida 📈")
     
     # Texto de introdução com estilo
     st.markdown("""

@@ -5,6 +5,22 @@ from backend.routers import Comparacao_graficos
 from log_config.logging_config import logger  # Importa o logger centralizado
 
 def Pagina_grafico(restrict_access=False):
+    """
+    Exibe a página de gráficos na aplicação Streamlit, permitindo ao usuário analisar 
+    e comparar os retornos acumulados da carteira de ações com o IBOVESPA.
+
+    Funcionalidades:
+        - Verifica se a estratégia está preenchida antes de continuar.
+        - Permite ao usuário selecionar um período de análise com datas de início e fim.
+        - Gera gráficos comparativos do retorno acumulado da carteira e do IBOVESPA.
+        - Valida as datas selecionadas pelo usuário.
+
+    Args:
+        restrict_access (bool, optional): Flag para restringir o acesso à página. Padrão é False.
+
+    Returns:
+        None
+    """
     logger.info("Página Gráficos carregada.")  # Registro de carregamento da página
     
     # Título sempre visível
@@ -49,7 +65,7 @@ def Pagina_grafico(restrict_access=False):
                 st.error("⚠️ A data de fim deve ser posterior à data de início.")
                 return
 
-            if st.button("🔍 Gerar Gráficos"):
+            if st.button("Gerar Gráficos"):
                 try:
                     df_carteira = pegar_df_preco_corrigido(data_ini, data_fim, acoes_carteira)
                     df_ibov = pegar_df_preco_diversos(data_ini, data_fim)
